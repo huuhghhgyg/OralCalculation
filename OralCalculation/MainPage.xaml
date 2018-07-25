@@ -1,0 +1,42 @@
+﻿<Page
+    x:Class="OralCalculation.MainPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:OralCalculation"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d"
+    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+
+    <Grid Background="{ThemeResource SystemControlAcrylicWindowBrush}">
+        <CommandBar IsOpen="False" DefaultLabelPosition="Bottom" VerticalAlignment="Bottom">
+            <AppBarButton x:Name="StartButton" Icon="Edit" Label="开始" Click="StartButton_Click"/>
+            <AppBarButton Icon="Filter" Label="范围">
+                <AppBarButton.Flyout>
+                    <MenuFlyout>
+                        <MenuFlyoutItem x:Name="Area10Button" Text="10以内" Click="Area10Button_Click"/>
+                        <MenuFlyoutItem x:Name="Area20Button" Text="20以内" Click="Area20Button_Click" />
+                        <MenuFlyoutItem x:Name="Area50Button" Text="50以内" Click="Area50Button_Click"/>
+                        <MenuFlyoutItem x:Name="Area100Button" Text="100以内" Click="Area100Button_Click"/>
+                    </MenuFlyout>
+                </AppBarButton.Flyout>
+            </AppBarButton>
+            <AppBarButton Icon="Bullets" Label="运算法则">
+                <AppBarButton.Flyout>
+                    <MenuFlyout>
+                        <ToggleMenuFlyoutItem x:Name="PlusToggle" Text="加法"/>
+                        <ToggleMenuFlyoutItem x:Name="MinusToggle" Text="减法"/>
+                        <ToggleMenuFlyoutItem x:Name="MultiplyToggle" Text="乘法"/>
+                    </MenuFlyout>
+                </AppBarButton.Flyout>
+            </AppBarButton>
+        </CommandBar>
+        <CommandBar Background="Transparent" IsOpen="False" DefaultLabelPosition="Right" HorizontalAlignment="Right" Margin="0,50,30,0">
+            <AppBarButton x:Name="DidRightBoard" Icon="Accept" Label="0"/>
+            <AppBarButton x:Name="DidWrongBoard" Icon="Clear" Label="0"/>
+            <AppBarButton x:Name="PuzzleBoard" Icon="List" Label="0"/>
+        </CommandBar>
+        <TextBlock x:Name="PuzzleText" HorizontalAlignment="Stretch" Margin="100,100,10,0" Text="1+1=2" TextWrapping="Wrap" VerticalAlignment="Top" TextAlignment="Left" FontSize="100"/>
+        <TextBox x:Name="InputBox" HorizontalAlignment="Left" Margin="100,250,0,0" Text="2" VerticalAlignment="Top" FontSize="80" KeyUp="InputBox_KeyUp"/>
+    </Grid>
+</Page>
