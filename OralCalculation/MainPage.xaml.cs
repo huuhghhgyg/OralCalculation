@@ -38,6 +38,7 @@ namespace OralCalculation
         {
             this.InitializeComponent();
             extendAcrylicIntoTitleBar();
+            DidWrongBoard.Visibility = Visibility.Collapsed;
         }
 
         private void extendAcrylicIntoTitleBar()
@@ -101,6 +102,10 @@ namespace OralCalculation
             DidRightBoard.Label = DidRight.ToString();
             PuzzleBoard.Label = PuzzleDid.ToString();
             DidWrongBoard.Label = (PuzzleDid - DidRight).ToString();
+            if (PuzzleDid - DidRight > 0)
+            {
+                DidWrongBoard.Visibility = Visibility.Visible;
+            }
         }
 
         private void Area20Button_Click(object sender, RoutedEventArgs e)
