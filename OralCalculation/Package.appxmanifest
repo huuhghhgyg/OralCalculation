@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Package xmlns="http://schemas.microsoft.com/appx/manifest/foundation/windows10" xmlns:mp="http://schemas.microsoft.com/appx/2014/phone/manifest" xmlns:uap="http://schemas.microsoft.com/appx/manifest/uap/windows10" IgnorableNamespaces="uap mp">
-  <Identity Name="8c2ee14a-c745-4c0d-ae49-5d5ecfcab9ca" Publisher="CN=huuhg" Version="1.0.0.0" />
+  <Identity Name="8c2ee14a-c745-4c0d-ae49-5d5ecfcab9ca" Publisher="CN=huuhg" Version="0.0.5.0" />
   <mp:PhoneIdentity PhoneProductId="8c2ee14a-c745-4c0d-ae49-5d5ecfcab9ca" PhonePublisherId="00000000-0000-0000-0000-000000000000" />
   <Properties>
     <DisplayName>OralCalculation</DisplayName>

@@ -37,11 +37,11 @@ namespace OralCalculation
         public MainPage()
         {
             this.InitializeComponent();
-            extendAcrylicIntoTitleBar();
+            ExtendAcrylicIntoTitleBar();
             DidWrongBoard.Visibility = Visibility.Collapsed;
         }
 
-        private void extendAcrylicIntoTitleBar()
+        private void ExtendAcrylicIntoTitleBar()
         {
             CoreApplication.GetCurrentView().TitleBar.ExtendViewIntoTitleBar = true;
             ApplicationViewTitleBar titleBar = ApplicationView.GetForCurrentView().TitleBar; titleBar.ButtonBackgroundColor = Colors.Transparent; titleBar.ButtonInactiveBackgroundColor = Colors.Transparent;
@@ -111,6 +111,99 @@ namespace OralCalculation
         private void Area20Button_Click(object sender, RoutedEventArgs e)
         {
             CalculationArea = 20;
+        }
+
+        void KeyboardInput(string key)
+        {
+            InputBox.Text += key;
+        }
+
+
+        private void KeyButton1_Click(object sender, RoutedEventArgs e)
+        {
+            KeyboardInput("1");
+        }
+
+        private void KeyButtonClear_Click(object sender, RoutedEventArgs e)
+        {
+            InputBox.Text = "";
+        }
+
+        private void KeyButton2_Click(object sender, RoutedEventArgs e)
+        {
+            KeyboardInput("2");
+        }
+
+        private void KeyButton3_Click(object sender, RoutedEventArgs e)
+        {
+            KeyboardInput("3");
+        }
+
+        private void KeyButton4_Click(object sender, RoutedEventArgs e)
+        {
+            KeyboardInput("4");
+        }
+
+        private void KeyButton5_Click(object sender, RoutedEventArgs e)
+        {
+            KeyboardInput("5");
+        }
+
+        private void KeyButton6_Click(object sender, RoutedEventArgs e)
+        {
+            KeyboardInput("6");
+        }
+
+        private void KeyButton7_Click(object sender, RoutedEventArgs e)
+        {
+            KeyboardInput("7");
+        }
+
+        private void KeyButton8_Click(object sender, RoutedEventArgs e)
+        {
+            KeyboardInput("8");
+        }
+
+        private void KeyButton9_Click(object sender, RoutedEventArgs e)
+        {
+            KeyboardInput("9");
+        }
+
+        private void KeyButton0_Click(object sender, RoutedEventArgs e)
+        {
+            KeyboardInput("0");
+        }
+
+        private void KeyButtonEnter_Click(object sender, RoutedEventArgs e)
+        {
+            ConfirmAnswer();
+        }
+
+        private void KeyButtonMinus_Click(object sender, RoutedEventArgs e)
+        {
+            KeyboardInput("-");
+        }
+
+        private void KeyboardVisible_Click(object sender, RoutedEventArgs e)
+        {
+            if (Keyboard_Grid.Visibility == Visibility.Collapsed)
+            {
+                Keyboard_Grid.Visibility = Visibility.Visible;
+            }
+            else
+            {
+                Keyboard_Grid.Visibility = Visibility.Collapsed;
+            }
+        }
+
+        private void KeyboardRight_Click(object sender, RoutedEventArgs e)
+        {
+            Keyboard_Grid.HorizontalAlignment = HorizontalAlignment.Right;
+        }
+
+        private void KeyboardLeft_Click(object sender, RoutedEventArgs e)
+        {
+            Keyboard_Grid.HorizontalAlignment = HorizontalAlignment.Left;
         }
 
         void RefreshPuzzle()

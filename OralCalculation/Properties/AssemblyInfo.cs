@@ -8,10 +8,10 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyTitle("OralCalculation")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("")]
+[assembly: AssemblyCompany("huuhghhgyg")]
 [assembly: AssemblyProduct("OralCalculation")]
 [assembly: AssemblyCopyright("Copyright ©  2018")]
-[assembly: AssemblyTrademark("")]
+[assembly: AssemblyTrademark("huuhghhgyg")]
 [assembly: AssemblyCulture("")]
 
 // Version information for an assembly consists of the following four values:

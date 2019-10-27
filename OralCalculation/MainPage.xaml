@@ -11,6 +11,7 @@
     <Grid Background="{ThemeResource SystemControlAcrylicWindowBrush}">
         <CommandBar IsOpen="False" DefaultLabelPosition="Bottom" VerticalAlignment="Bottom">
             <AppBarButton x:Name="StartButton" Icon="Edit" Label="开始" Click="StartButton_Click"/>
+            
             <AppBarButton Icon="Filter" Label="范围">
                 <AppBarButton.Flyout>
                     <MenuFlyout>
@@ -21,12 +22,71 @@
                     </MenuFlyout>
                 </AppBarButton.Flyout>
             </AppBarButton>
+            
             <AppBarButton Icon="Bullets" Label="运算法则">
                 <AppBarButton.Flyout>
                     <MenuFlyout>
-                        <ToggleMenuFlyoutItem x:Name="PlusToggle" Text="加法"/>
-                        <ToggleMenuFlyoutItem x:Name="MinusToggle" Text="减法"/>
-                        <ToggleMenuFlyoutItem x:Name="MultiplyToggle" Text="乘法"/>
+                        <ToggleMenuFlyoutItem x:Name="PlusToggle" Text="加法">
+                            <MenuFlyoutItem.Icon>
+                                <FontIcon Glyph="&#xE109;"/>
+                            </MenuFlyoutItem.Icon>
+                            <MenuFlyoutItem.KeyboardAccelerators>
+                                <KeyboardAccelerator Key="Number1" Modifiers="Control"/>
+                            </MenuFlyoutItem.KeyboardAccelerators>
+                        </ToggleMenuFlyoutItem>
+
+                        <ToggleMenuFlyoutItem x:Name="MinusToggle" Text="减法">
+                            <MenuFlyoutItem.Icon>
+                                <FontIcon Glyph="&#xE108;"/>
+                            </MenuFlyoutItem.Icon>
+                            <MenuFlyoutItem.KeyboardAccelerators>
+                                <KeyboardAccelerator Key="Number2" Modifiers="Control"/>
+                            </MenuFlyoutItem.KeyboardAccelerators>
+                        </ToggleMenuFlyoutItem>
+                        
+                        <ToggleMenuFlyoutItem x:Name="MultiplyToggle" Text="乘法">
+                            <MenuFlyoutItem.Icon>
+                                <FontIcon Glyph="&#xE10A;"/>
+                            </MenuFlyoutItem.Icon>
+                            <MenuFlyoutItem.KeyboardAccelerators>
+                                <KeyboardAccelerator Key="Number3" Modifiers="Control"/>
+                            </MenuFlyoutItem.KeyboardAccelerators>
+                        </ToggleMenuFlyoutItem>
+                    </MenuFlyout>
+                </AppBarButton.Flyout>
+            </AppBarButton>
+            
+            <AppBarButton x:Name="KeyboardButton" Icon="Keyboard" Label="虚拟键盘">
+                <AppBarButton.Flyout>
+                    <MenuFlyout>
+                        <MenuFlyoutItem x:Name="KeyboardLeft" Text="键盘靠左" Click="KeyboardLeft_Click">
+                            <MenuFlyoutItem.Icon>
+                                <FontIcon Glyph="&#xE763;"/>
+                            </MenuFlyoutItem.Icon>
+                            <MenuFlyoutItem.KeyboardAccelerators>
+                                <KeyboardAccelerator Key="L" Modifiers="Control"/>
+                            </MenuFlyoutItem.KeyboardAccelerators>
+                        </MenuFlyoutItem>
+                        
+                        <MenuFlyoutItem x:Name="KeyboardRight" Text="键盘靠右" Click="KeyboardRight_Click">
+                            <MenuFlyoutItem.Icon>
+                                <FontIcon Glyph="&#xE764;"/>
+                            </MenuFlyoutItem.Icon>
+                            <MenuFlyoutItem.KeyboardAccelerators>
+                                <KeyboardAccelerator Key="R" Modifiers="Control"/>
+                            </MenuFlyoutItem.KeyboardAccelerators>
+                        </MenuFlyoutItem>
+                        
+                        <MenuFlyoutSeparator/>
+                        
+                        <MenuFlyoutItem x:Name="KeyboardVisible" Text="显示/隐藏键盘" Click="KeyboardVisible_Click">
+                            <MenuFlyoutItem.Icon>
+                                <FontIcon Glyph="&#xEC31;"/>
+                            </MenuFlyoutItem.Icon>
+                            <MenuFlyoutItem.KeyboardAccelerators>
+                                <KeyboardAccelerator Key="K" Modifiers="Control"/>
+                            </MenuFlyoutItem.KeyboardAccelerators>
+                        </MenuFlyoutItem>
                     </MenuFlyout>
                 </AppBarButton.Flyout>
             </AppBarButton>
@@ -38,5 +98,32 @@
         </CommandBar>
         <TextBlock x:Name="PuzzleText" HorizontalAlignment="Stretch" Margin="100,100,10,0" Text="1+1=2" TextWrapping="Wrap" VerticalAlignment="Top" TextAlignment="Left" FontSize="100"/>
         <TextBox x:Name="InputBox" HorizontalAlignment="Left" Margin="100,250,0,0" Text="2" VerticalAlignment="Top" FontSize="80" KeyUp="InputBox_KeyUp"/>
+        <Grid x:Name="Keyboard_Grid" Width="600" HorizontalAlignment="Right" VerticalAlignment="Stretch" Margin="40,450,40,80" Visibility="Collapsed">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition/>
+                <ColumnDefinition/>
+                <ColumnDefinition/>
+                <ColumnDefinition/>
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition/>
+                <RowDefinition/>
+                <RowDefinition/>
+                <RowDefinition/>
+            </Grid.RowDefinitions>
+            <Button x:Name="KeyButton1" Margin="2" Content="1" Grid.Row="2" Grid.Column="0" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" FontSize="30" Click="KeyButton1_Click" />
+            <Button x:Name="KeyButton2" Margin="2" Content="2" Grid.Row="2" Grid.Column="1" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" FontSize="30" Click="KeyButton2_Click" />
+            <Button x:Name="KeyButton3" Margin="2" Content="3" Grid.Row="2" Grid.Column="2" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" FontSize="30" Click="KeyButton3_Click" />
+            <Button x:Name="KeyButton4" Margin="2" Content="4" Grid.Row="1" Grid.Column="0" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" FontSize="30" Click="KeyButton4_Click" />
+            <Button x:Name="KeyButton5" Margin="2" Content="5" Grid.Row="1" Grid.Column="1" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" FontSize="30" Click="KeyButton5_Click" />
+            <Button x:Name="KeyButton6" Margin="2" Content="6" Grid.Row="1" Grid.Column="2" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" FontSize="30" Click="KeyButton6_Click" />
+            <Button x:Name="KeyButton7" Margin="2" Content="7" Grid.Row="0" Grid.Column="0" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" FontSize="30" Click="KeyButton7_Click" />
+            <Button x:Name="KeyButton8" Margin="2" Content="8" Grid.Row="0" Grid.Column="1" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" FontSize="30" Click="KeyButton8_Click" />
+            <Button x:Name="KeyButton9" Margin="2" Content="9" Grid.Row="0" Grid.Column="2" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" FontSize="30" Click="KeyButton9_Click" />
+            <Button x:Name="KeyButton0" Margin="2" Content="0" Grid.Row="3" Grid.Column="1" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" FontSize="30" Click="KeyButton0_Click" />
+            <Button x:Name="KeyButtonClear" Margin="2" Content="C" Grid.Row="3" Grid.Column="2" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" FontSize="30" Click="KeyButtonClear_Click" />
+            <Button x:Name="KeyButtonMinus" Margin="2" Content="-" Grid.Row="3" Grid.Column="0" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" FontSize="30" Click="KeyButtonMinus_Click" />
+            <Button x:Name="KeyButtonEnter" Margin="2" Content="=" Grid.Row="0" Grid.RowSpan="4" Grid.Column="3" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" FontSize="30" Click="KeyButtonEnter_Click"/>
+        </Grid>
     </Grid>
 </Page>
