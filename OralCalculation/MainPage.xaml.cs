@@ -1,21 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Runtime.InteropServices.WindowsRuntime;
+﻿using Microsoft.Toolkit.Uwp.Notifications;
+using System;
 using Windows.ApplicationModel.Core;
-using Windows.Foundation;
-using Windows.Foundation.Collections;
 using Windows.System;
 using Windows.UI;
+using Windows.UI.Notifications;
 using Windows.UI.ViewManagement;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Controls.Primitives;
-using Windows.UI.Xaml.Data;
 using Windows.UI.Xaml.Input;
-using Windows.UI.Xaml.Media;
-using Windows.UI.Xaml.Navigation;
 
 // https://go.microsoft.com/fwlink/?LinkId=402352&clcid=0x804 上介绍了“空白页”项模板
 
@@ -33,6 +25,10 @@ namespace OralCalculation
 
         public int FirstNumber = 1, LastNumber = 1, Symbol = 1;//symbol 1加法 2减法 3乘法
         public int PuzzleDid, DidRight = 0;
+        public int TotalNumber = 0;
+        public bool GameStarted = false;
+
+        Formula formula = new Formula();
 
         public MainPage()
         {
@@ -47,26 +43,109 @@ namespace OralCalculation
             ApplicationViewTitleBar titleBar = ApplicationView.GetForCurrentView().TitleBar; titleBar.ButtonBackgroundColor = Colors.Transparent; titleBar.ButtonInactiveBackgroundColor = Colors.Transparent;
         }
 
-        private void StartButton_Click(object sender, RoutedEventArgs e)
+        private async void StartButton_Click(object sender, RoutedEventArgs e)
         {
-            //检查所有配置
-            if (PlusToggle.IsChecked == false && MinusToggle.IsChecked == false & MultiplyToggle.IsChecked == false)
+            if (GameStarted == true)
             {
-                //没有选择运算法则
-                ShowMessageDialog("请在右下角选择运算法则", "没有选择运算法则");
+                GameRestartDialog.Visibility = Visibility.Visible;
+                ContentDialogResult IsRestart = await GameRestartDialog.ShowAsync();
+                if (IsRestart == ContentDialogResult.Primary)
+                {
+                    //重置
+                    PuzzleDid = 0;
+                    DidRight = 0;
+                    GameStarted = false;
+                    //开始
+                    RefreshBoard();
+                    //允许重新选择
+                    FreezeOptions(false);
+                }
             }
             else
             {
-                //开始
-                RefreshPuzzle();
+                EnterAnswer();
             }
         }
 
-        private async void ShowMessageDialog(string msg, string title)
+        bool IsConfigurationDone()
         {
-            var msgDialog = new Windows.UI.Popups.MessageDialog(msg) { Title = title };
-            msgDialog.Commands.Add(new Windows.UI.Popups.UICommand("确定"));
-            await msgDialog.ShowAsync();
+            if (PlusToggle.IsChecked == false && MinusToggle.IsChecked == false & MultiplyToggle.IsChecked == false)
+            {
+                return false;
+            }
+            else
+            {
+                return true;
+            }
+        }
+
+        private void EnterAnswer()
+        {
+            //检查所有配置
+            if (IsConfigurationDone() == false)
+            {
+                //没有选择运算法则
+                BottomCommandBar.IsOpen = true;
+                StartTeachingTip.IsOpen = true;
+            }
+            else
+            {
+                if (GameStarted == false)
+                {
+                    //开始
+                    RefreshPuzzle();
+                    GameStarted = true;
+                    InputBox.Text = "";
+
+                    //显示范围
+                    RangeBoard.Label = "0-" + CalculationArea.ToString();
+                    RangeBoard.Visibility = Visibility.Visible;
+                }
+                else
+                {
+                    ConfirmAnswer();
+                    RefreshBoard();
+                }
+
+                FreezeOptions(true);
+            }
+
+            TotalNumber++;
+        }
+
+        void FreezeOptions(bool selection)//运算过程中冻结选择
+        {
+            if (selection == true)
+            {
+                //禁止重新选择
+                Area10Button.IsEnabled = false;
+                Area20Button.IsEnabled = false;
+                Area50Button.IsEnabled = false;
+                Area100Button.IsEnabled = false;
+
+                PlusToggle.IsEnabled = false;
+                MinusToggle.IsEnabled = false;
+                MultiplyToggle.IsEnabled = false;
+            }
+            else
+            {
+                //允许重新选择
+                Area10Button.IsEnabled = true;
+                Area20Button.IsEnabled = true;
+                Area50Button.IsEnabled = true;
+                Area100Button.IsEnabled = true;
+
+                PlusToggle.IsEnabled = true;
+                MinusToggle.IsEnabled = true;
+                MultiplyToggle.IsEnabled = true;
+
+            }
+        }
+
+        private void SetAlgorithmDialog()
+        {
+            BottomCommandBar.IsOpen = true;
+            StartTeachingTip.IsOpen = true;
         }
 
         private void Area10Button_Click(object sender, RoutedEventArgs e)
@@ -85,10 +164,11 @@ namespace OralCalculation
         }
 
         private void InputBox_KeyUp(object sender, KeyRoutedEventArgs e)
+        
         {
             if (e.Key == VirtualKey.Enter)//enter键
             {
-                ConfirmAnswer();
+                EnterAnswer();
             }
         }
 
@@ -99,6 +179,19 @@ namespace OralCalculation
             {
                 DidRight++;
             }
+            RefreshBoard();
+
+            //更新磁贴
+            if (PuzzleDid != 0 && DidRight != 0)
+            {
+                UpdatetTile("Practice",
+                    "错误数:"+(PuzzleDid-DidRight),
+                    "上次做题:" + TotalNumber.ToString());
+            }
+        }
+
+        void RefreshBoard()
+        {
             DidRightBoard.Label = DidRight.ToString();
             PuzzleBoard.Label = PuzzleDid.ToString();
             DidWrongBoard.Label = (PuzzleDid - DidRight).ToString();
@@ -176,7 +269,7 @@ namespace OralCalculation
 
         private void KeyButtonEnter_Click(object sender, RoutedEventArgs e)
         {
-            ConfirmAnswer();
+            EnterAnswer();
         }
 
         private void KeyButtonMinus_Click(object sender, RoutedEventArgs e)
@@ -208,45 +301,81 @@ namespace OralCalculation
 
         void RefreshPuzzle()
         {
-            FirstNumber = RandomMath(0, CalculationArea);
-            LastNumber = RandomMath(0, CalculationArea);
-            remake:
-            Symbol = RandomMath(1, 3);//随机符号
-            string sym = "";
-            switch (Symbol)
+            //    FirstNumber = RandomMath(0, CalculationArea);
+            //    LastNumber = RandomMath(0, CalculationArea);
+            //remake:
+            //    Symbol = RandomMath(1, 3);//随机符号
+            //    string sym = "";
+            //    switch (Symbol)
+            //    {
+            //        case 1:
+            //            if (PlusToggle.IsChecked == false)
+            //            {
+            //                goto remake;
+            //            }
+            //            else
+            //            {
+            //                sym = "+";
+            //            }
+            //            break;
+            //        case 2:
+            //            if (MinusToggle.IsChecked == false)
+            //            {
+            //                goto remake;
+            //            }
+            //            else
+            //            {
+            //                sym = "-";
+            //            }
+            //            break;
+            //        case 3:
+            //            if (MultiplyToggle.IsChecked == false)
+            //            {
+            //                goto remake;
+            //            }
+            //            else
+            //            {
+            //                sym = "×";
+            //            }
+            //            break;
+            //    }
+            //    PuzzleText.Text = FirstNumber.ToString() + sym + LastNumber.ToString() + "=?";
+
+
+            string[] _puzzle = formula.GenerateArrayFormula(CalculationArea,
+                PlusToggle.IsChecked,
+                MinusToggle.IsChecked,
+                MultiplyToggle.IsChecked);
+
+            //注册
+            FirstNumber = int.Parse(_puzzle[0]);
+            LastNumber = int.Parse(_puzzle[2]);
+
+            switch (_puzzle[1])
             {
-                case 1:
-                    if (PlusToggle.IsChecked == false)
-                    {
-                        goto remake;
-                    }
-                    else
-                    {
-                        sym = "+";
-                    }
+                case "+":
+                    Symbol = 1;
                     break;
-                case 2:
-                    if (MinusToggle.IsChecked == false)
-                    {
-                        goto remake;
-                    }
-                    else
-                    {
-                        sym = "-";
-                    }
+                case "-":
+                    Symbol = 2;
                     break;
-                case 3:
-                    if (MultiplyToggle.IsChecked == false)
-                    {
-                        goto remake;
-                    }
-                    else
-                    {
-                        sym = "×";
-                    }
+                case "*":
+                    Symbol = 3;
                     break;
             }
-            PuzzleText.Text = FirstNumber.ToString() + sym + LastNumber.ToString() + "=?";
+
+            PuzzleText.Text = _puzzle[0]+ _puzzle[1]+ _puzzle[2] + "=?";//生成算式
+        }
+
+        private async void PrintPractice_Click(object sender, RoutedEventArgs e)
+        {
+            ContentDialog1 dialog = new ContentDialog1();
+            await dialog.ShowAsync();
+        }
+
+        private void PrintHistory_Click(object sender, RoutedEventArgs e)
+        {
+            formula.PrintHistory();
         }
 
         int RandomMath(int from, int to)
@@ -261,7 +390,7 @@ namespace OralCalculation
 
             {
                 //没有选择运算法则
-                ShowMessageDialog("请在右下角选择运算法则", "没有选择运算法则");
+                SetAlgorithmDialog();
             }
             else
             {
@@ -287,9 +416,16 @@ namespace OralCalculation
                                 sym = "×";
                                 break;
                         }
+
+
                         if (InputBox.Text == result.ToString())
                         {
                             //验证为正确答案
+                            formula.AddHistory(FirstNumber.ToString() 
+                                + sym 
+                                + LastNumber.ToString()
+                                +"="+result.ToString());
+
                             DidPuzzle(true);//做对
                             InputBox.Text = "";
                             //刷新题目
@@ -298,6 +434,12 @@ namespace OralCalculation
                         else
                         {
                             //验证为错误答案
+                            formula.AddHistory(FirstNumber.ToString()
+                                + sym
+                                + LastNumber.ToString()
+                                + "=" + result.ToString()
+                                +" !");
+
                             DidPuzzle(false);
                             InputBox.Text = "";
                             //显示正确答案
@@ -311,6 +453,77 @@ namespace OralCalculation
                     RefreshPuzzle();
                 }
             }
+        }
+
+
+        private void UpdatetTile(string title, string subject, string body)//更新磁贴：title,subject(第一行),body(第二行)
+        {
+            // In a real app, these would be initialized with actual data
+
+            // Construct the tile content
+            TileContent content = new TileContent()
+            {
+                Visual = new TileVisual()
+                {
+                    TileMedium = new TileBinding()
+                    {
+                        Content = new TileBindingContentAdaptive()
+                        {
+                            Children =
+                {
+                    new AdaptiveText()
+                    {
+                        Text = title
+                    },
+
+                    new AdaptiveText()
+                    {
+                        Text = subject,
+                        HintStyle = AdaptiveTextStyle.CaptionSubtle
+                    },
+
+                    new AdaptiveText()
+                    {
+                        Text = body,
+                        HintStyle = AdaptiveTextStyle.CaptionSubtle
+                    }
+                }
+                        }
+                    },
+
+                    TileWide = new TileBinding()
+                    {
+                        Content = new TileBindingContentAdaptive()
+                        {
+                            Children =
+                {
+                    new AdaptiveText()
+                    {
+                        Text = title,
+                        HintStyle = AdaptiveTextStyle.Subtitle
+                    },
+
+                    new AdaptiveText()
+                    {
+                        Text = subject,
+                        HintStyle = AdaptiveTextStyle.CaptionSubtle
+                    },
+
+                    new AdaptiveText()
+                    {
+                        Text = body,
+                        HintStyle = AdaptiveTextStyle.CaptionSubtle
+                    }
+                }
+                        }
+                    }
+                }
+            };
+
+            // Create the tile notification
+            var notification = new TileNotification(content.GetXml());
+
+            TileUpdateManager.CreateTileUpdaterForApplication().Update(notification);
         }
     }
 }
