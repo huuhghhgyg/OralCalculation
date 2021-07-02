@@ -130,7 +130,7 @@
             </controls:TeachingTip.IconSource>
         </controls:TeachingTip>
 
-        <!--重新开始对话框-->
+            <!--重新开始对话框-->
         <ContentDialog x:Name="GameRestartDialog"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
