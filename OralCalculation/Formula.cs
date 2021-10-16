@@ -115,8 +115,6 @@ namespace OralCalculation
                 ContentDialogResult result = await CancelledDialog.ShowAsync();
 
             }
-
-
         }
 
         public string[] GenerateArrayFormula(int range, bool plus, bool minus, bool multiply)
